@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Trellograph</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+  </head>
+  <body class="login">
+    <!-- splash -->
+    <div id="splash" class="splash visible">
+      <div class="loader">Loading...</div>
+    </div>
+    <webview id="login" preload="../util/preload.js" autosize="on"></webview>
+    <script>
+      onload = function() {
+        // module dependencies
+        var url = require('url');
+        var config = require('../config');
+        // get splash element
+        var splash = document.getElementById("splash");
+        // get webview element
+        var webview = document.getElementById("login");
+        // create login url
+        var loginUrl = url.format({
+          protocol: 'https',
+          host: 'api.trello.com',
+          pathname: '/1/connect',
+          query: {
+            name: 'Trellograph',
+            expiration: 'never',
+            scope: 'read,write,account',
+            key: config.get('key'),
+            response_type: 'token'
+          }
+        });
+        // set src
+        webview.src = loginUrl;
+        // on commit
+        webview.addEventListener('did-start-loading', function() {
+          // show splash
+          splash.className = "splash visible";
+        });
+        // on dom ready
+        webview.addEventListener('did-stop-loading', function(evt) {
+          // hide splash
+          if (webview.getUrl() !== 'https://trello.com/1/token/approve') {
+            splash.className = "splash";
+          }
+        });
+        // on dom ready
+        webview.addEventListener('dom-ready', function(evt) {
+          // hide splash
+          if (webview.getUrl() !== 'https://trello.com/1/token/approve') {
+            splash.className = "splash";
+          }
+        });
+        // on console message
+        webview.addEventListener('console-message', function(e) {
+          console.log('[guest] %s', e.message);
+        });
+        // hide splash
+        splash.className = "splash";
+      }
+    </script>
+  </body>
+</html>

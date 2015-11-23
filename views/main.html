@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html ng-app="trellograph" ng-controller='main'>
+  <head>
+    <meta charset="utf-8">
+    <title ng-bind='(notifications.length > 0 ? "(" + notifications.length + ") " : "") + "Trellograph"'>Trellograph</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+  </head>
+  <body>
+    <!-- wrapper -->
+    <div class="wrapper">
+
+    </div>
+    <!-- splash -->
+    <div class="splash" ng-cloak="" ng-class="{ visible: loading }">
+      <div class="loader">Loading...</div>
+    </div>
+    <!-- heading -->
+    <header>
+      <img src="../assets/images/trello.png" alt="Trello Logo" />
+    </header>
+    <!-- navigation -->
+    <nav>
+      <ul>
+        <li ng-class="{ active: state === 'notifications' }" ng-show="user" ng-click="state = 'notifications'">
+          <a href="#">Notifications</a>
+        </li>
+        <li ng-class="{ active: state === 'profile' }" ng-show="user" ng-click="state = 'profile'">
+          <a href="#">Profile</a>
+          </a>
+        </li>
+        <li ng-class="{ active: state === 'login' }" ng-hide="user" ng-click="state = 'login'">
+          <a href="#">Log In</a>
+          </a>
+        </li>
+        <li ng-class="{ active: state === 'about' }" ng-click="state = 'about'">
+          <a href="#">About</a>
+        </li>
+      </ul>
+    </nav>
+    <!-- notifications -->
+    <div class="content notifications" ng-show="state === 'notifications'">
+      <div class="container">
+        <h1>Notifications</h1>
+        <p ng-if="notifications.length === 0">You don't have any unread notifications</p>
+        <p ng-if="notifications.length > 0">{{notifications.length}} unread notification(s)</p>
+        <!-- refresh -->
+        <div ng-if="notifications.length === 0">
+          <a href="#" ng-click="connect(user, true)" class="btn-trello btn-trello-green">Refresh now</a>
+        </div>
+        <!-- source code -->
+        <p class="quiet" ng-if="notifications.length === 0">
+          Looking for <a href="https://trello.com/{{user.id}}/notifications"><strong>read notifications</strong></a>?
+        </p>
+        <div ng-if="notifications.length" class="notification-list">
+          <a href="#" ng-click="markAsRead()" class="btn-trello btn-trello-green">Mark all as read</a>
+          <div class="notification-list-item" ng-repeat="notification in notifications">
+            <div class="avatar">
+              <img ng-src="https://trello-avatars.s3.amazonaws.com/{{notification.memberCreator.avatarHash}}/30.png" alt="{{notification.memberCreator.fullName}}" />
+            </div>
+            <div class="description" compile="notification.html"></div>
+            <p class="quiet">{{ moment(notification.date).fromNow() }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- profile -->
+    <div class="content profile" ng-show="state === 'profile'">
+      <div class="container">
+        <div class="header">
+          <img ng-if="user.gravatarHash" src="../assets/images/placeholder/avatar.png" ng-src="https://trello-avatars.s3.amazonaws.com/{{user.avatarHash}}/30.png" alt="{{user.fullName}}" />
+          <h1>{{user.fullName}}</h1>
+          <p>{{user.url}}</p>
+        </div>
+        <a href="https://trello.com" class="btn-trello btn-trello-green">View profile</a>
+        <p class="quiet">You are signed in as <strong>{{user.username}}</strong>.</p>
+        <a class="quiet" href="#" ng-click="logout()"><strong>Click here to log out!</strong></a>
+      </div>
+    </div>
+    <!-- login -->
+    <div class="content login" ng-show="state === 'login'">
+      <div class="container">
+        <h1>Log in to Trello</h1>
+        <a href="#" ng-click="login()" class="btn-trello btn-trello-green">Log In</a>
+        <p class="quiet">
+          Forgot your password?
+          <a href="https://trello.com/forgot">Reset it.</a>
+        </p>
+        <p class="quiet">
+          Don’t have an account?
+          <a href="https://trello.com/signup">Create a Trello account.</a>
+        </p>
+      </div>
+    </div>
+    <!-- about -->
+    <div class="content about" ng-show="state === 'about'">
+      <div class="container">
+        <!-- name -->
+        <h1>
+          Trellograph
+          <small>v{{pjson.version}}</small>
+        </h1>
+        <!-- description -->
+        <p>{{pjson.description}}</p>
+        <!-- check update -->
+        <div>
+          <a href="#" ng-click="checkUpdate($event)" class="btn-trello btn-trello-green">Check for updates</a>
+        </div>
+        <!-- source code -->
+        <p class="quiet">
+          Looking for the <a href="https://github.com/jiabin/trellograph"><strong>source code</strong></a>?
+        </p>
+      </div>
+    </div>
+    <!-- scripts -->
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script>window.angular = require('angular');</script>
+    <script src="../app/app.js"></script>
+  </body>
+</html>

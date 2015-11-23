@@ -1,0 +1,10 @@
+{
+  "node": true,
+  "browser": true,
+  "undef": true,
+  "unused": "vars",
+  "globals": {
+    "angular": true,
+    "alert": true
+  }
+}
